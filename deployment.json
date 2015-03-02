@@ -1,0 +1,6 @@
+{
+  "name" : "Magento",
+  "version" : "1.0.0",
+  "type": ["zray", "mvc"],
+  "logo": "zray/logo.png"
+}
