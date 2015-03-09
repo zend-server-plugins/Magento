@@ -1,0 +1,45 @@
+<?php 
+$tableParams = array(
+	'tableId' 			=> 'magento-request-tree',
+    'tableWidth'        => '4-wide',
+);
+?>
+ 
+<?php echo $this->zrayTable($tableParams); //zrayTableHtml ?>
+
+
+<script type="text/javascript">
+(function() {
+	var storage = zray.getStorage('magento-request');
+	// create main table
+	var maintable = zray.createTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
+	maintable.setColumns([
+		{
+			label: 'Property',
+			propertyName: 'property',
+			sortable:true
+		},
+		{
+			label: 'Init Value',
+			propertyName: 'Init Value',
+			sortable:true
+		},
+		{
+			label: 'Final Value',
+			propertyName: 'Final Value',
+			sortable:true,
+		}
+	]);
+	// create main table - end
+
+	// create pager
+	zray.createPager(storage, jQuery('#magento-request-pager'));
+	// create search
+	zray.createSearch(storage, jQuery('#magento-request-search'), maintable);
+	
+	zray.registerDataHandler('magento', 'mrequest', function(extensionData, requestData) {
+		storage.setData(extensionData);
+	});
+	
+})();
+</script>

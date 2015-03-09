@@ -1,0 +1,84 @@
+<?php 
+$tableParams = array(
+	'tableId' 			=> 'mage-layouts-tree',
+);
+?>
+
+<style>
+[data-name="zrayExtension:magento/layouts"] .xmlButtons button {
+    background: rgb(20, 113, 161);
+    border: 0px solid rgb(215, 215, 215);
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 1px 1px 1px #EFEFEF;
+    padding: 4px 10px;
+    cursor: pointer;
+}
+</style>
+<span class="xmlButtons">
+    <button rel="page" onclick="xmlShow(pageXml)">
+		Page XML
+		<div class="xmlData" style="display:none;"></div>
+	</button>
+	<button rel="package" onclick="xmlShow(packageXml)">
+		Pacakge XML
+		<div class="xmlData" style="display:none;"></div>
+	</button>        
+</span>
+
+<?php echo $this->zrayTable($tableParams); //zrayTableHtml ?>
+
+
+<script type="text/javascript">
+var pageXml,packageXml;
+(function() {
+	var storage = zray.getStorage('layouts');
+	// create main table
+	var maintable = zray.createGeneralTreeTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
+	
+	maintable.setColumns([
+		
+		{
+			label: 'Layout XMLs',
+			propertyName: 'filename',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(!val || !rec.file || rec.file.length<5 || !zray.getFileActions || !zray.showInIde) { return val; }
+				
+				var showInIDEParams = {filePath: rec.file, line: 1 || 1, fullUrl: document.location.href};
+				return zray.getFileActions(val, val, rec.file, showInIDEParams);
+			}
+		}
+	]);
+	// create main table - end
+
+	zray.registerDataHandler('magento', 'layouts', function(extensionData, requestData) {
+		pageXml = extensionData[0].page.data;
+		packageXml = extensionData[0].package.data;
+		storage.setData(extensionData[0].layouts.data);
+		jQuery('[data-name="zrayExtension:magento/layouts"] .xmlButtons').prependTo(jQuery('[data-name="zrayExtension:magento/layouts"] .zdb-col-3-wide .zdb-pull-right'));
+		jQuery('[data-name="zrayExtension:magento/layouts"] .zdb-toolbar-info').append(' ('+extensionData[0].layouts.data.length+')');
+	});
+
+})();
+var xmlShow = function(xml){
+	if(window.hljs){
+		xml= hljs.highlightAuto(xml).value;
+	}
+	html='<html>\
+			<head>\
+			<link rel="stylesheet" href="/ZendServer/hljs/styles/tomorrow.css"> \
+			<title>Layout</title> \
+			</head>\
+			<body>\
+			<pre><code>\
+			'+xml+' \
+			</code></pre> \
+			</body>\
+		</html>';
+	var win = window.open(); 
+	win.document.write(html);
+	win.document.close();
+}
+</script>
+

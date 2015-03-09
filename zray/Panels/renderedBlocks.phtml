@@ -1,0 +1,83 @@
+<?php 
+$tableParams = array(
+	'tableId' 			=> 'mage-rendered-blocks-tree',
+    'tableWidth'        => '4',
+);
+?>
+
+    
+<div>
+    
+     <?php echo $this->zrayTable($tableParams); //zrayTableHtml ?>
+        
+</div>
+
+
+<script type="text/javascript">
+
+(function() {
+	var storage = zray.getStorage('renderedBlocks');
+	// create main table
+	var maintable = zray.createGeneralTreeTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
+	maintable.setColumns([
+		{
+			label: 'Class',
+			propertyName: 'class',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(!val || !rec.classFile || rec.classFile.length<5 || !zray.getFileActions || !zray.showInIde) { return val; }
+				var showInIDEParams = {filePath: rec.classFile, line: 1, fullUrl: document.location.href};
+				return zray.getFileActions(val, val, rec.classFile, showInIDEParams);
+			}
+		},
+		{
+			label: 'Layout',
+			propertyName: 'layout',
+			sortable:true
+		},
+		{
+			label: 'Duration (ms)',
+			propertyName: 'render_time',
+			sortable:true,
+			width:100
+		},
+		{
+			label: 'Template',
+			propertyName: 'template',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(!val || !rec.templateFile || rec.templateFile.length<5 || !zray.getFileActions || !zray.showInIde) { return val; }
+				var showInIDEParams = {filePath: rec.templateFile, line: 1, fullUrl: document.location.href};
+				return zray.getFileActions(val, val, rec.templateFile, showInIDEParams);
+			}
+		},
+		{
+			label: 'View Variables',
+			propertyName: 'view_variables',
+			sortable:true
+		},
+		{
+			label: 'Cached',
+			propertyName: 'in_cache',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(val){
+					return 'Yes';
+				}else{
+					return 'No';
+				}
+			},
+			width:70
+		},
+	]);
+	// create main table - end
+
+	zray.registerDataHandler('magento', 'renderedBlocks', function(extensionData, requestData) {
+		storage.setData(extensionData);
+		
+		jQuery('[data-name="zrayExtension:magento/renderedBlocks"] .zdb-toolbar-info').append(' ('+extensionData.length+')');
+	});
+
+})();
+</script>
+

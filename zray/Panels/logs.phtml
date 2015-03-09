@@ -1,0 +1,41 @@
+<?php 
+$tableParams = array(
+	'tableId' 			=> 'mage-logs-tree',
+    'tableWidth'        => '4',
+);
+?>
+
+    
+<div>
+    
+     <?php echo $this->zrayTable($tableParams); //zrayTableHtml ?>
+        
+</div>
+
+
+<script type="text/javascript">
+(function() {
+	var storage = zray.getStorage('mlogs');
+	// create main table
+	var maintable = zray.createGeneralTreeTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
+	maintable.setColumns([
+		{
+			label: 'Log File',
+			propertyName: 'logFile',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(!val || !rec.logFile || rec.logFile.length<5 || !zray.getFileActions || !zray.showInIde) { return val; }
+				var showInIDEParams = {filePath: rec.logFile, line: 1, fullUrl: document.location.href};
+				return zray.getFileActions(val, val, rec.logFile, showInIDEParams);
+			}
+		}
+	]);
+	zray.registerDataHandler('magento', 'mlogs', function(extensionData, requestData) {
+		//debugger;
+		storage.setData(extensionData);
+		jQuery('[data-name="zrayExtension:magento/logs"] .zdb-toolbar-info').append(' ('+extensionData.length+')');
+	});
+
+})();
+</script>
+

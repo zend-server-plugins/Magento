@@ -1,0 +1,69 @@
+<?php 
+$tableParams = array(
+	'tableId' 			=> 'mage-blocks-tree',
+    'tableWidth'        => '4',
+);
+?>
+
+    
+<div>
+    
+     <?php echo $this->zrayTable($tableParams); //zrayTableHtml ?>
+        
+</div>
+
+
+<script type="text/javascript">
+(function() {
+	var storage = zray.getStorage('blocks');
+	// create main table
+	var maintable = zray.createGeneralTreeTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
+	maintable.setColumns([
+		{
+			label: 'section',
+			propertyName: 'blocks',
+			sortable:true
+		},
+		{
+			label: 'Block (class)',
+			propertyName: 'class',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(!val || !rec.classFile || rec.classFile.length<5 || !zray.getFileActions || !zray.showInIde) { return val; }
+				var showInIDEParams = {filePath: rec.classFile, line: 1, fullUrl: document.location.href};
+				return zray.getFileActions(val, val, rec.classFile, showInIDEParams);
+			}
+		},
+		{
+			label: 'template',
+			propertyName: 'template',
+			sortable:true,
+			getHtml: function(val, rec) {
+				if(!val || !rec.templateFile || rec.templateFile.length<5 || !zray.getFileActions || !zray.showInIde) { return val; }
+				var showInIDEParams = {filePath: rec.templateFile, line: 1, fullUrl: document.location.href};
+				return zray.getFileActions(val, val, rec.templateFile, showInIDEParams);
+			}
+		},
+		{
+			label: 'context',
+			propertyName: 'context',
+			sortable:true
+		}
+	]);
+	// create main table - end
+	if(maintable.getChildrenRepresentation && maintable.getChildrenRepresentation.length > 2 && maintable.setRootHtml){
+		maintable.setRootHtml(function(children,parent) {
+			if(parent && parent.layout_name){
+				return parent.layout_name;
+			}
+			return 'Not Available';
+		});
+	}
+	zray.registerDataHandler('magento', 'blocks', function(extensionData, requestData) {
+		storage.setData(extensionData[0].blocks);
+		jQuery('[data-name="zrayExtension:magento/blocks"] .zdb-toolbar-info').append(' ('+extensionData[0].count+')');
+	});
+
+})();
+</script>
+
