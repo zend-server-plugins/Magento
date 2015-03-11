@@ -11,10 +11,8 @@ class Module extends \ZRay\ZRayModule {
 			),
 	        // configure  custom panels
             'defaultPanels' => array(
-                'mlogs'     => false,
-				'mevents'   => false,
-                'moverview' => false,
-                'mrequest'  => false,
+                'mlogs'=>false,
+				'mevents'=>false
              ),
 	        'panels' => array(
 				'logs' => array(
@@ -57,22 +55,12 @@ class Module extends \ZRay\ZRayModule {
 				    'searchId'      => 'magento-events-search',
 				    'pagerId'       => 'magento-events-pager',
 				),
-	            'request' => array(
-	                'display'       => true,
-	                'logo'          => 'logo.png',
-	                'menuTitle' 	=> 'Request',
-	                'panelTitle'	=> 'Request',
-	                'searchId'      => 'magento-request-search',
-	                'pagerId'       => 'magento-request-pager',
-	            ),
-	            'overview' => array(
-	                'display'       => true,
+				'overview' => array(
+					'display'       => true,
 	                'logo'          => 'logo.png',
 	                'menuTitle' 	=> 'Overview',
 	                'panelTitle'	=> 'Overview',
-	                'searchId'      => 'magento-overview-search',
-	                'pagerId'       => 'magento-overview-pager',
-	            ),
+				)
 	         )
 	    );
 	}	

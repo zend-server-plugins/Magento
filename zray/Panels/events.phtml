@@ -20,10 +20,16 @@ $tableParams = array(
 	var maintable = zray.createGeneralTreeTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
 	maintable.setColumns([
 		{
-			label: '#',
+			label: 'index',
 			propertyName: 'observers',
 			sortable:true,
 			width:80
+		},
+		{
+			label: 'area',
+			propertyName: 'area',
+			sortable:true,
+			width:90
 		},
 		{
 			label: 'Event / Observer',
@@ -31,10 +37,14 @@ $tableParams = array(
 			sortable:true
 		},
 		{
-			label: 'area',
-			propertyName: 'area',
+			label: 'Duration (ms)',
+			propertyName: 'duration',
 			sortable:true,
-			width:90
+			width:100,
+			getHtml: function(val, rec) {
+				if(val){ return val; }
+				return val.toFixed(3);
+			}
 		},
 		{
 			label: 'Action',
@@ -64,30 +74,14 @@ $tableParams = array(
 			label: 'Args',
 			propertyName: 'args',
 			sortable:true
-		},
-		{
-			label: 'Duration (ms)',
-			propertyName: 'duration',
-			sortable:true,
-			width:100,
-			getHtml: function(val, rec) {
-				if(val){ return val; }
-				var durationSum=0;
-				jQuery.each(rec.observersArray,function(k,v){
-					durationSum+=parseFloat(v.duration);
-				});
-				return durationSum.toFixed(3);
-			}
 		}
 	]);
-
 	// create main table - end
 
 	// create pager
 	zray.createPager(storage, jQuery('#magento-events-pager'));
 	// create search
 	zray.createSearch(storage, jQuery('#magento-events-search'), maintable);
-	
 	if(maintable.getChildrenRepresentation && maintable.getChildrenRepresentation.length > 2 && maintable.setRootHtml){
 		//debugger;
 		maintable.setRootHtml(function(children,parent) {
@@ -99,7 +93,11 @@ $tableParams = array(
 	}
 	zray.registerDataHandler('magento', 'mevents', function(extensionData, requestData) {
 		jQuery.each(extensionData,function(k,v){
-			extensionData[k].observersArray=v.observers;
+			var durationSum=0;
+			jQuery.each(v.observers,function(k2,v2){
+				durationSum+=parseFloat(v2.duration);
+			});
+			extensionData[k].duration = durationSum;
 		});
 		storage.setData(extensionData);
 		jQuery('[data-name="zrayExtension:magento/events"] .zdb-toolbar-info').append(' ('+extensionData.length+')');

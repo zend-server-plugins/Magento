@@ -1,27 +1,99 @@
 <?php 
 $tableParams = array(
-	'tableId' 			=> 'magento-overview-tree',
-    'tableWidth'        => '4-wide',
+	'overview'=>array(
+		'tableId' 			=> 'mage-overview-overview-tree',
+	),
+	'request'=>array(
+		'tableId' 			=> 'mage-overview-request-tree',
+	),
+	'handles'=>array(
+		'tableId' 			=> 'mage-overview-handles-tree',
+	)
 );
 ?>
- 
-<?php echo $this->zrayTable($tableParams); //zrayTableHtml ?>
+
+<style>
+[data-name="zrayExtension:magento/overview"] .tabs-table:not(.active){
+	display:none;
+}
+
+#zend-dev-bar .tabs [id^="tab"][checked] + label {
+    top: 0;
+    padding-top: 9px;
+    background: #dddddd;
+	color: #696969;
+}
+</style>
+<ul class="tabs">
+	<li rel="overview" onclick="switchTab(this)"><input type="radio" name="tabs" id="tab1" checked /> 
+		<label for="tab1"><?php echo _t('Overview'); ?></label>
+	</li>
+	<li rel="request" onclick="switchTab(this)"><input type="radio" name="tabs" id="tab2" /> 
+		<label for="tab2"><?php echo _t('Requests'); ?></label>
+	</li>
+	<li rel="handles" onclick="switchTab(this)"><input type="radio" name="tabs" id="tab3" /> 
+		<label for="tab3"><?php echo _t('Handles'); ?></label>
+	</li>
+</ul>
+<div class="tabs-table active" rel="overview">
+	<?php echo $this->zrayTable($tableParams['overview']); //zrayTableHtml ?>
+</div>
+<div class="tabs-table" rel="request">
+	<?php echo $this->zrayTable($tableParams['request']); //zrayTableHtml ?>
+</div>
+<div class="tabs-table" rel="handles">
+	<?php echo $this->zrayTable($tableParams['handles']); //zrayTableHtml ?>
+</div>
 
 
 <script type="text/javascript">
 (function() {
-	var storage = zray.getStorage('magento-overview');
-	// create main table
-	var maintable = zray.createTreeTable(storage, jQuery('#<?php echo $tableParams['tableId']; ?>'));
-
-	// create pager
-	zray.createPager(storage, jQuery('#magento-overview-pager'));
-	// create search
-	zray.createSearch(storage, jQuery('#magento-overview-search'), maintable);
+	var overviewStorage = zray.getStorage('overview');
+	var overviewMaintable = zray.createTreeTable(overviewStorage, jQuery('#<?php echo $tableParams['overview']['tableId']; ?>'));
 	
-	zray.registerDataHandler('magento', 'moverview', function(extensionData, requestData) {
-		storage.setData(extensionData);
+	var handlesStorage = zray.getStorage('handles');
+	var handlesMaintable = zray.createGeneralTreeTable(handlesStorage, jQuery('#<?php echo $tableParams['handles']['tableId']; ?>'));
+	handlesMaintable.setColumns([
+		{
+			label: 'Name',
+			propertyName: 'name',
+			sortable:true
+		}
+	]);
+	
+	var requestStorage = zray.getStorage('request');
+	var requestMaintable = zray.createGeneralTreeTable(requestStorage, jQuery('#<?php echo $tableParams['request']['tableId']; ?>'));
+	requestMaintable.setColumns([
+		{
+			label: 'Property',
+			propertyName: 'property',
+			sortable:true
+		},
+		{
+			label: 'Init Value',
+			propertyName: 'init',
+			sortable:true
+		},
+		{
+			label: 'Final Value',
+			propertyName: 'final',
+			sortable:true
+		},
+	]);
+		
+	zray.registerDataHandler('magento', 'overview', function(extensionData, requestData) {
+		overviewStorage.setData(extensionData[0].overview);
+		requestStorage.setData(extensionData[0].request);
+		handlesStorage.setData(extensionData[0].handles);
+		
+		//jQuery('[data-name="zrayExtension:magento/overview"] .tabsButtons').prependTo(jQuery('[data-name="zrayExtension:magento/overview"] .zdb-col-3-wide .zdb-pull-right'));
 	});
-	
+
 })();
+var switchTab = function(tab){
+	jQuery('[data-name="zrayExtension:magento/overview"] .active, [data-name="zrayExtension:magento/overview"] [checked]').removeClass('active').removeAttr('checked');
+	jQuery('[data-name="zrayExtension:magento/overview"] [rel="'+tab.getAttribute('rel')+'"]').addClass('active');
+	jQuery('[data-name="zrayExtension:magento/overview"] [rel="'+tab.getAttribute('rel')+'"] input').prop('checked',true).attr('checked',true);
+}
 </script>
+

@@ -31,7 +31,7 @@ $tableParams = array(
 		}
 	]);
 	zray.registerDataHandler('magento', 'mlogs', function(extensionData, requestData) {
-		//debugger;
+		if(!extensionData){ extensionData = []; }
 		storage.setData(extensionData);
 		jQuery('[data-name="zrayExtension:magento/logs"] .zdb-toolbar-info').append(' ('+extensionData.length+')');
 	});

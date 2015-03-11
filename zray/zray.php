@@ -24,7 +24,7 @@ class Magento {
 	private $zray = null;
 	private $blocks = array();
 	private $events = array();
-	private $eventsCount = 0;
+	private $_eventsCount = 0;
 	private $registeredEvents = array();
 	private $observersProfiles = array();
     
@@ -62,31 +62,10 @@ class Magento {
 		$storage['observers'] = array();
 		$this->storeObservers($storage['observers'][]);
 		
-		//Requests
-		$finalRequests = (array)Mage::app()->getRequest();
 		
-		
-		$storage['mrequest'][] = array('property' => 'Controller Name', 'Init Value'=>Mage::app()->getRequest()->getControllerName(), 'Final Value'=>Mage::app()->getRequest()->getControllerName());
-		
-		$storage['mrequest'][] = array('property' => 'Action Name', 'Init Value'=>Mage::app()->getRequest()->getActionName(), 'Final Value'=>Mage::app()->getRequest()->getActionName());
-		
-		$storage['mrequest'][] = array('property' => 'Route Name', 'Init Value'=>Mage::app()->getRequest()->getRouteName(), 'Final Value'=>Mage::app()->getRequest()->getRouteName());
-		
-		$storage['mrequest'][] = array('property' => 'Module Name', 'Init Value'=>Mage::app()->getRequest()->getModuleName(), 'Final Value'=>Mage::app()->getRequest()->getModuleName());
-		
-		foreach($this->requests as $key=>$value) {
-			$finalVal = !array_key_exists($key,$finalRequests) ? '[NULL]' : $finalRequests[$key];
-			$storage['mrequest'][] = array('property' => $key, 
-                                          'Init Value' => is_array($value) ? print_r($value,true) : $value, 'Final Value'=>is_array($finalVal) ? print_r($finalVal,true) : $finalVal);
-		}
-
-		//Handles
-		$storage['handles'] = array_map(function($handle){
-			return array('name' => $handle);
-		}, Mage::app()->getLayout()->getUpdate()->getHandles());
 		
 		//Overview
-		$storage['moverview'][] = $this->getOverview();
+		$storage['overview'][] = $this->getOverview();
 		
 		//Logs
 		$storage['mlogs'] = $this->getLogs();
@@ -201,6 +180,31 @@ class Magento {
         $cacheMethod = end($cacheMethod);
         $controllerClassReflection = new ReflectionClass(get_class(Mage::app()->getFrontController()->getAction()));
         
+		//Requests
+		$finalRequests = (array)Mage::app()->getRequest();
+		
+		$request = array();
+		
+		$request[] = array('property' => 'Controller Name', 'init'=>Mage::app()->getRequest()->getControllerName(), 'final'=>Mage::app()->getRequest()->getControllerName());
+		
+		$request[] = array('property' => 'Action Name', 'init'=>Mage::app()->getRequest()->getActionName(), 'final'=>Mage::app()->getRequest()->getActionName());
+		
+		$request[] = array('property' => 'Route Name', 'init'=>Mage::app()->getRequest()->getRouteName(), 'final'=>Mage::app()->getRequest()->getRouteName());
+		
+		$request[] = array('property' => 'Module Name', 'init'=>Mage::app()->getRequest()->getModuleName(), 'final'=>Mage::app()->getRequest()->getModuleName());
+		
+		foreach($this->requests as $key=>$value) {
+			$finalVal = !array_key_exists($key,$finalRequests) ? '[NULL]' : $finalRequests[$key];
+			$request[] = array('property' => $key, 
+                                          'init' => is_array($value) ? print_r($value,true) : $value, 'final'=>is_array($finalVal) ? print_r($finalVal,true) : $finalVal);
+		}
+
+		//Handles
+		$handles = array_map(function($handle){
+			return array('name' => $handle);
+		}, Mage::app()->getLayout()->getUpdate()->getHandles());
+		
+		
 		$collection = Mage::getModel('catalog/product')->getCollection()
             ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes()) //add the attributes visible in product list to the collection
             ->addMinimalPrice() //add the prices to the collection
@@ -272,7 +276,11 @@ class Magento {
 				
 	        );
 		
-		return $overview;
+		return array(
+			'overview'=>$overview,
+			'request'=>$request,
+			'handles'=>$handles
+		);
 	}
 
 	
@@ -367,6 +375,10 @@ class Magento {
 			}
 			$blocks_count++;
         }
+		/*
+		$blocks=json_decode(json_encode($blocks));
+		print_r($blocks);die;*/
+		$storage['blocks'][]=array('blocks'=>$blocks,'count'=>$blocks_count);
 		
 		//$storage['blocks'][] = array_copy(array('blocks' => $blocks,'count' => $blocks_count));
 		$storage['blocks'][] = json_decode(json_encode(array('blocks' => $blocks,'count' => $blocks_count)), true);
@@ -392,7 +404,7 @@ class Magento {
 		$this->events[$event]=array(
 			'id'=>++$this->_eventsCount,
 			'name'=>$event,
-			'action'=>get_class($context['functionArgs'][1]),
+			'action'=>is_object($context['functionArgs'][1]) ? get_class($context['functionArgs'][1]) : false,
 		);
 		/* EOF Block render */
 		$args = isset($context['functionArgs'][1]) ? $context['functionArgs'][1] : array();
@@ -441,7 +453,7 @@ class Magento {
 		foreach($modules as $moduleName => $module){
 			$storage[] = array(
 				'Name'=>$moduleName,
-				'Active'=>(bool)$module->active,
+				'Active'=>$module->active == 'false' ? 'false' : 'true',
 				'Code Pool'=>(string)$module->codePool,
 				'Version'=>(string)$module->version,
 			);
