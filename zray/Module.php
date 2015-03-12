@@ -20,6 +20,8 @@ class Module extends \ZRay\ZRayModule {
 	                'logo'          => 'logo.png',
 	                'menuTitle' 	=> 'Logs',
 	                'panelTitle'	=> 'Logs',
+				    'searchId'      => 'magento-logs-search',
+				    'pagerId'       => 'magento-logs-pager',
 				),
 				'blocks' => array(
 					'display'       => true,

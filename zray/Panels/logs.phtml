@@ -1,7 +1,9 @@
 <?php 
 $tableParams = array(
 	'tableId' 			=> 'mage-logs-tree',
-    'tableWidth'        => '4',
+    'tableWidth'        => '3-wide',
+    'summaryTableId'    => 'mage-logs-summary-table',
+    'summaryTableWidth' => '1-narrow',
 );
 ?>
 
@@ -42,6 +44,70 @@ $tableParams = array(
 			width:150
 		}
 	]);
+	
+	var summaryTable = zray.createSummaryTable(storage, jQuery('#<?php echo $tableParams['summaryTableId']; ?>'));
+
+	// set the columns structure
+	summaryTable.setColumns([
+       {
+            label: '',
+            propertyName: 'file',
+            width: '10%',
+            getHtml: function(value, record) {
+                return summaryTable.createCheckboxColumn(value, record, summaryTable);
+            }
+       },
+       {
+           label: 'File',
+           propertyName: 'file',
+           width: '80%',
+       },
+       {
+			label: 'Count',
+			propertyName: 'count',
+			width: '10%',
+			attributes: {'class': 'zdb-numerical'},
+			getHtml: function(val) {
+				return '(' + val + ')';
+			}
+		}
+    ]);
+
+	// set by which column the user choice will filter
+	summaryTable.setFilterColumn('file');
+
+	// set callback function to create the table rows from all the data
+	// return an array of rows, with columns that match to setColumns
+	summaryTable.setUpdateCallback(function (data) {
+		if (! data) return [];
+
+		var aggregated = {};
+		$zendDevBar.each(data, function(key, log){
+			if (aggregated[log.file]) {
+				aggregated[log.file]++;
+			} else {
+				aggregated[log.file] = 1;
+			}
+		});
+
+		if (Object.keys(aggregated).length == 0) {
+			return [];
+		}
+		
+		var normalized = [];
+		normalized.push({'file': 'All', 'count': jQuery.map(aggregated, function(v){return v}).reduce(function(acc, item){return acc += item})});
+		
+		return normalized.concat($zendDevBar.map(aggregated, function(count, file){
+			return {'file': file, 'count': count};
+		}));
+	});
+	// create summary table - end
+
+	// create pager
+	zray.createPager(storage, jQuery('#magento-logs-pager'));
+	// create search
+	zray.createSearch(storage, jQuery('#magento-logs-search'), maintable);
+	
 	zray.registerDataHandler('magento', 'mlogs', function(extensionData, requestData) {
 		storage.setData(extensionData[0].logs);
 		jQuery('[data-name="zrayExtension:magento/logs"] .zdb-toolbar-detail-header h1').append('<small style="margin-left: 10px;">Developer Mode: '+extensionData[0].devMode+'</small>');
