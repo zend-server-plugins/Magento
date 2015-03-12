@@ -27,6 +27,7 @@ class Magento {
 	private $_eventsCount = 0;
 	private $registeredEvents = array();
 	private $observersProfiles = array();
+	private $_logs = array();
     
     public function setZRay($zray) {
         $this->zray = $zray;
@@ -66,9 +67,6 @@ class Magento {
 		
 		//Overview
 		$storage['overview'][] = $this->getOverview();
-		
-		//Logs
-		$storage['mlogs'] = $this->getLogs();
 		
 		//Layout
 		$storage['layouts'][] = $this->getLayoutview();
@@ -141,19 +139,9 @@ class Magento {
 		}
 		
 		$storage['mevents'] = $events;
-	}
-	
-	private function getLogs(){
-		$files = array();
-		$base = Mage::getBaseDir('log');
-		foreach(scandir($base) as $file){
-			if($file=='.'||$file=='..'){ continue; }
-			$files[]=array(
-				'file'=>$file,
-				'logFile'=>Mage::getBaseDir('log') . DIRECTORY_SEPARATOR . $file
-			);
-		}
-		return $files;
+		
+		//Logs
+		$storage['mlogs'][] = array('logs'=>$this->_logs,'devMode'=>Mage::getIsDeveloperMode());
 	}
 	
 	private function getLayoutview(){
@@ -529,6 +517,10 @@ class Magento {
 		$this->registeredEvents=$events;
 		unset($mageReflect);
 	}
+	
+	public function logError($context, & $storage){
+		$this->_logs[] = $context['locals'];
+	}
 }
 
 
@@ -541,6 +533,7 @@ $zrayMagento->getZRay()->setMetadata(array(
 
 $zrayMagento->getZRay()->setEnabledAfter('Mage::run');
 $zrayMagento->getZRay()->traceFunction('Mage::app', function(){}, array($zrayMagento, 'mageAppExit'));
+$zrayMagento->getZRay()->traceFunction('Mage::log', function(){}, array($zrayMagento, 'logError'));
 $zrayMagento->getZRay()->traceFunction('Mage::run', function(){}, array($zrayMagento, 'mageRunExit'));
 $zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::_callObserverMethod', array($zrayMagento, 'appCallObserverMethodStart'), array($zrayMagento, 'appCallObserverMethodEnd'));
 $zrayMagento->getZRay()->traceFunction('Mage::dispatchEvent', array($zrayMagento, 'mageDispatchEventStart'), function(){});	
