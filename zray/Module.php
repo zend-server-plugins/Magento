@@ -34,6 +34,8 @@ class Module extends \ZRay\ZRayModule {
 	                'logo'          => 'logo.png',
 	                'menuTitle' 	=> 'Rendered Blocks',
 	                'panelTitle'	=> 'Rendered Blocks',
+				    'searchId'      => 'magento-rblocks-search',
+				    'pagerId'       => 'magento-rblocks-pager',
 				),
 				'layouts' => array(
 					'display'       => true,

@@ -71,7 +71,11 @@ $tableParams = array(
 		},
 	]);
 	// create main table - end
-
+	// create pager
+	zray.createPager(storage, jQuery('#magento-rblocks-pager'));
+	// create search
+	zray.createSearch(storage, jQuery('#magento-rblocks-search'), maintable);
+	
 	zray.registerDataHandler('magento', 'renderedBlocks', function(extensionData, requestData) {
 		storage.setData(extensionData);
 		
