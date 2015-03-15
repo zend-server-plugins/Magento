@@ -535,7 +535,6 @@ $zrayMagento->getZRay()->setEnabledAfter('Mage::run');
 $zrayMagento->getZRay()->traceFunction('Mage::app', function(){}, array($zrayMagento, 'mageAppExit'));
 $zrayMagento->getZRay()->traceFunction('Mage::log', function(){}, array($zrayMagento, 'logError'));
 $zrayMagento->getZRay()->traceFunction('Mage::run', function(){}, array($zrayMagento, 'mageRunExit'));
-/*$zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::_callObserverMethod', array($zrayMagento, 'appCallObserverMethodStart'), array($zrayMagento, 'appCallObserverMethodEnd'));
+$zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::_callObserverMethod', array($zrayMagento, 'appCallObserverMethodStart'), array($zrayMagento, 'appCallObserverMethodEnd'));
 $zrayMagento->getZRay()->traceFunction('Mage::dispatchEvent', array($zrayMagento, 'mageDispatchEventStart'), function(){});	
 $zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::run', function(){},array($zrayMagento, 'createEvents'));	
-*/
