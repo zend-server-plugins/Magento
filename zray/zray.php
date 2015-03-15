@@ -228,9 +228,9 @@ class Magento {
 			$productAttrsCount++;
 		}
 		
-		$urlRewritesCount = Mage::getModel('core/url_rewrite')
+		/*$urlRewritesCount = Mage::getModel('core/url_rewrite')
 		->getCollection()
-		->count();
+		->count();*/
 		
 		$overview = array(
 	            'Website ID'      => (method_exists($_website,'getId')) ? $_website->getId() : '',
@@ -245,7 +245,7 @@ class Magento {
 				'Categories'		=> $categoryCount,
 				'Orders'		=> $ordersCount,
 				'Product Attributes'		=> $productAttrsCount,
-				'URL Rewrites'		=> $urlRewritesCount,
+				//'URL Rewrites'		=> $urlRewritesCount,
 	            'Cache Backend'    => $cacheMethod,
 				'Magento Version'   => Mage::getVersion(),
 				'Edition'              => Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise') ? 'enterprise' : 'community',
@@ -535,6 +535,7 @@ $zrayMagento->getZRay()->setEnabledAfter('Mage::run');
 $zrayMagento->getZRay()->traceFunction('Mage::app', function(){}, array($zrayMagento, 'mageAppExit'));
 $zrayMagento->getZRay()->traceFunction('Mage::log', function(){}, array($zrayMagento, 'logError'));
 $zrayMagento->getZRay()->traceFunction('Mage::run', function(){}, array($zrayMagento, 'mageRunExit'));
-$zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::_callObserverMethod', array($zrayMagento, 'appCallObserverMethodStart'), array($zrayMagento, 'appCallObserverMethodEnd'));
+/*$zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::_callObserverMethod', array($zrayMagento, 'appCallObserverMethodStart'), array($zrayMagento, 'appCallObserverMethodEnd'));
 $zrayMagento->getZRay()->traceFunction('Mage::dispatchEvent', array($zrayMagento, 'mageDispatchEventStart'), function(){});	
 $zrayMagento->getZRay()->traceFunction('Mage_Core_Model_App::run', function(){},array($zrayMagento, 'createEvents'));	
+*/
