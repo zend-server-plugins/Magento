@@ -17,34 +17,30 @@ $tableParams = array(
 	display:none;
 }
 
-#zend-dev-bar .tabs [id^="tab"][checked] + label {
-    top: 0;
-    padding-top: 9px;
-    background: #dddddd;
-	color: #696969;
-}
 </style>
 <ul class="tabs">
-	<li rel="overview" onclick="switchTab(this)"><input type="radio" name="tabs" id="tab1" checked /> 
-		<label for="tab1"><?php echo _t('Overview'); ?></label>
+	<li>
+		<input type="radio" name="magento-tab" id="tab-magento-1" checked />
+		<label for="tab-magento-1"><?php echo _t('Overview'); ?></label>
+		<div id="tab-content-magento-1" class="tab-content">
+			<?php echo $this->zrayTable($tableParams['overview']); //zrayTableHtml ?>
+		</div>
 	</li>
-	<li rel="request" onclick="switchTab(this)"><input type="radio" name="tabs" id="tab2" /> 
-		<label for="tab2"><?php echo _t('Requests'); ?></label>
+	<li>
+		<input type="radio" name="magento-tab" id="tab-magento-2" />
+		<label for="tab-magento-2"><?php echo _t('Requests'); ?></label>
+		<div id="tab-content-magento-2" class="tab-content">
+			<?php echo $this->zrayTable($tableParams['request']); //zrayTableHtml ?>
+		</div>
 	</li>
-	<li rel="handles" onclick="switchTab(this)"><input type="radio" name="tabs" id="tab3" /> 
-		<label for="tab3"><?php echo _t('Handles'); ?></label>
+	<li>
+		<input type="radio" name="magento-tab" id="tab-magento-3" />
+		<label for="tab-magento-3"><?php echo _t('Handles'); ?></label>
+		<div id="tab-content-magento-3" class="tab-content">
+			<?php echo $this->zrayTable($tableParams['handles']); //zrayTableHtml ?>
+		</div>
 	</li>
 </ul>
-<div class="tabs-table active" rel="overview">
-	<?php echo $this->zrayTable($tableParams['overview']); //zrayTableHtml ?>
-</div>
-<div class="tabs-table" rel="request">
-	<?php echo $this->zrayTable($tableParams['request']); //zrayTableHtml ?>
-</div>
-<div class="tabs-table" rel="handles">
-	<?php echo $this->zrayTable($tableParams['handles']); //zrayTableHtml ?>
-</div>
-
 
 <script type="text/javascript">
 (function() {
