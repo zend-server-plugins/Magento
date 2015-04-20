@@ -1,5 +1,6 @@
 {
-  "name" : "Magento",
+  "name" : "magento",
+  "display_name" : "Magento",
   "version" : "1.0.0",
   "type": ["zray", "route"],
   "logo": "zray/logo.png"
