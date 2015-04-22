@@ -437,14 +437,16 @@ class Magento {
 	 * @param array $storage
 	 */
 	private function storeModules(& $storage) {
-		$modules = Mage::getConfig()->getNode('modules')->children();
-		foreach($modules as $moduleName => $module){
-			$storage[] = array(
-				'Name'=>$moduleName,
-				'Active'=>$module->active == 'false' ? 'false' : 'true',
-				'Code Pool'=>(string)$module->codePool,
-				'Version'=>(string)$module->version,
-			);
+		if (Mage::getConfig()->getNode('modules')) {
+			$modules = Mage::getConfig()->getNode('modules')->children();
+			foreach($modules as $moduleName => $module){
+				$storage[] = array(
+					'Name'=>$moduleName,
+					'Active'=>$module->active == 'false' ? 'false' : 'true',
+					'Code Pool'=>(string)$module->codePool,
+					'Version'=>(string)$module->version,
+				);
+			}
 		}
 	}
 	
