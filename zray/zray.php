@@ -12,7 +12,7 @@ function array_copy($arr) {
 
 /*********************************
 	Magento Z-Ray Extension
-	Version: 1.02
+	Version: 1.03
 **********************************/
 class Magento {
 	
