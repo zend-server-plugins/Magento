@@ -278,6 +278,9 @@ class Magento {
 		}
 		$block = $context['functionArgs'][1]['block'];
 		
+		if(get_class($block) == 'Mage_Adminhtml_Block_Page_Menu' && !Mage::getSingleton('admin/session')->getUser()){
+			return;
+		}
 		$blockStruct = array();
 		$blockStruct['class'] = get_class($block);
 		try{
