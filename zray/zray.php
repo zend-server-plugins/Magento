@@ -10,10 +10,6 @@ function array_copy($arr) {
     return $newArray;
 }
 
-/*********************************
-	Magento Z-Ray Extension
-	Version: 1.03
-**********************************/
 class Magento {
 	
 	/**
