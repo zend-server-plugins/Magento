@@ -60,6 +60,7 @@ $tableParams = array(
 		});
 	}
 	zray.registerDataHandler('magento', 'blocks', function(extensionData, requestData) {
+		extensionData = extensionData ? extensionData : [{ blocks:[], count:0 }];
 		storage.setData(extensionData[0].blocks);
 		jQuery('[data-name="zrayExtension:magento/blocks"] .zdb-toolbar-info').append(' ('+extensionData[0].count+')');
 	});

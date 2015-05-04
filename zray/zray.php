@@ -192,45 +192,42 @@ class Magento {
 			return array('name' => $handle);
 		}, Mage::app()->getLayout()->getUpdate()->getHandles());
 		
-		
-		$collection = Mage::getModel('catalog/product')->getCollection()
-            ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes()) //add the attributes visible in product list to the collection
-            ->addMinimalPrice() //add the prices to the collection
-            ->addFinalPrice()
-            ->addTaxPercents()
-            ->addUrlRewrite(); //add the url rewrites to the collection
-			
-		$activeProductsCount = Mage::getModel('catalog/product')
-		->getCollection()
-        ->addAttributeToSelect('entity_id')
-        ->addAttributeToFilter('status', 1)
-        ->addAttributeToFilter('visibility', 4)
-		->count();
-		
-		$disabledProductsCount = Mage::getModel('catalog/product')
-		->getCollection()
-        ->addAttributeToSelect('entity_id')
-        ->addAttributeToFilter('status', 0)
-		->count();
-		
-		$categoryCount = Mage::getModel('catalog/category')
-		->getCollection()
-		->count();
-		
-		$ordersCount = Mage::getModel('sales/order')
-		->getCollection()
-		->count();
-		
 		$productAttrsCount=0;
-		$productAttrs = Mage::getResourceModel('catalog/product_attribute_collection');
-		foreach ($productAttrs as $productAttr) { 
-		/** $productAttr Mage_Catalog_Model_Resource_Eav_Attribute */
-			$productAttrsCount++;
-		}
+		try{
+				
+			$activeProductsCount = Mage::getModel('catalog/product')
+			->getCollection()
+			->addAttributeToSelect('entity_id')
+			->addAttributeToFilter('status', 1)
+			->addAttributeToFilter('visibility', 4)
+			->count();
+			
+			$disabledProductsCount = Mage::getModel('catalog/product')
+			->getCollection()
+			->addAttributeToSelect('entity_id')
+			->addAttributeToFilter('status', 0)
+			->count();
+			
+			$categoryCount = Mage::getModel('catalog/category')
+			->getCollection()
+			->count();
 		
-		/*$urlRewritesCount = Mage::getModel('core/url_rewrite')
-		->getCollection()
-		->count();*/
+			$ordersCount = Mage::getModel('sales/order')
+			->getCollection()
+			->count();
+			
+			
+			$productAttrs = Mage::getResourceModel('catalog/product_attribute_collection');
+			foreach ($productAttrs as $productAttr) { 
+				/* $productAttr Mage_Catalog_Model_Resource_Eav_Attribute */
+				$productAttrsCount++;
+			}
+		}catch(Exception $e){
+			$activeProductsCount = 0;
+			$disabledProductsCount = 0;
+			$categoryCount = 0;
+			$ordersCount = 0;
+		}
 		
 		$overview = array(
 	            'Website ID'      => (method_exists($_website,'getId')) ? $_website->getId() : '',
@@ -245,7 +242,6 @@ class Magento {
 				'Categories'		=> $categoryCount,
 				'Orders'		=> $ordersCount,
 				'Product Attributes'		=> $productAttrsCount,
-				//'URL Rewrites'		=> $urlRewritesCount,
 	            'Cache Backend'    => $cacheMethod,
 				'Magento Version'   => Mage::getVersion(),
 				'Edition'              => Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise') ? 'enterprise' : 'community',
@@ -366,12 +362,7 @@ class Magento {
 			}
 			$blocks_count++;
         }
-		/*
-		$blocks=json_decode(json_encode($blocks));
-		print_r($blocks);die;*/
-		$storage['blocks'][]=array('blocks'=>$blocks,'count'=>$blocks_count);
 		
-		//$storage['blocks'][] = array_copy(array('blocks' => $blocks,'count' => $blocks_count));
 		$storage['blocks'][] = json_decode(json_encode(array('blocks' => $blocks,'count' => $blocks_count)), true);
 	}
 	
