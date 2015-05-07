@@ -208,9 +208,9 @@ class Magento {
 			->getCollection()
 			->count();
 		
-			$ordersCount = Mage::getModel('sales/order')
+			/*$ordersCount = Mage::getModel('sales/order')
 			->getCollection()
-			->count();
+			->count();*/
 			
 			
 			$productAttrs = Mage::getResourceModel('catalog/product_attribute_collection');
@@ -236,7 +236,7 @@ class Magento {
 				'Active Products'	=> $activeProductsCount,
 				'Disabled Products'	=> $disabledProductsCount,
 				'Categories'		=> $categoryCount,
-				'Orders'		=> $ordersCount,
+				//'Orders'		=> $ordersCount,
 				'Product Attributes'		=> $productAttrsCount,
 	            'Cache Backend'    => $cacheMethod,
 				'Magento Version'   => Mage::getVersion(),
