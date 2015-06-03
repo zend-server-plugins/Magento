@@ -3,5 +3,6 @@
   "display_name" : "Magento",
   "version" : "1.0.5",
   "type": ["zray", "route"],
-  "logo": "logo.png"
+  "logo": "logo.png",
+  "eula": "LICENSE.txt"
 }
