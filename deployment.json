@@ -1,8 +1,14 @@
 {
   "name" : "magento",
   "display_name" : "Magento",
-  "version" : "1.0.5",
+  "version" : "1.0.6",
   "type": ["zray", "route"],
   "logo": "logo.png",
-  "eula": "LICENSE.txt"
+  "eula": "LICENSE.txt",
+  "readme": "README.txt",
+  "dependencies": {
+    "plugin": {
+        "min": "1.0.0"
+    }
+  }
 }
