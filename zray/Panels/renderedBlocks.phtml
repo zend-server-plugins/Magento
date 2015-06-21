@@ -78,8 +78,7 @@ $tableParams = array(
 	
 	zray.registerDataHandler('magento', 'renderedBlocks', function(extensionData, requestData) {
 		storage.setData(extensionData);
-		
-		jQuery('[data-name="zrayExtension:magento/renderedBlocks"] .zdb-toolbar-info').append(' ('+extensionData.length+')');
+		zray.updateMenuTitle('magento', 'renderedBlocks', 'Rendered Blocks (' + extensionData.length + ')');
 	});
 
 })();

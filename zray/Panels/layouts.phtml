@@ -57,7 +57,7 @@ var pageXml,packageXml;
 		packageXml = extensionData[0].package.data;
 		storage.setData(extensionData[0].layouts.data);
 		jQuery('[data-name="zrayExtension:magento/layouts"] .xmlButtons').prependTo(jQuery('[data-name="zrayExtension:magento/layouts"] .zdb-col-3-wide .zdb-pull-right'));
-		jQuery('[data-name="zrayExtension:magento/layouts"] .zdb-toolbar-info').append(' ('+extensionData[0].layouts.data.length+')');
+		zray.updateMenuTitle('magento', 'layouts', 'Layouts (' + extensionData[0].layouts.data.length + ')');
 	});
 
 })();

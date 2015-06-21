@@ -126,7 +126,7 @@ $tableParams = array(
 	
 	zray.registerDataHandler('magento', 'observers', function(extensionData, requestData) {
 		storage.setData(extensionData[0].observers);
-		jQuery('[data-name="zrayExtension:magento/observers"] .zdb-toolbar-info').append(' ('+extensionData[0].observers.length+')');
+		zray.updateMenuTitle('magento', 'observers', 'Observers (' + extensionData[0].observers.length + ')');
 	});
 	
 })();

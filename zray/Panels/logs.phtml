@@ -111,7 +111,7 @@ $tableParams = array(
 	zray.registerDataHandler('magento', 'mlogs', function(extensionData, requestData) {
 		storage.setData(extensionData[0].logs);
 		jQuery('[data-name="zrayExtension:magento/logs"] .zdb-toolbar-detail-header h1').append('<small style="margin-left: 10px;">Developer Mode: '+extensionData[0].devMode+'</small>');
-		jQuery('[data-name="zrayExtension:magento/logs"] .zdb-toolbar-info').append(' ('+extensionData[0].logs.length+')');
+		zray.updateMenuTitle('magento', 'mlogs', 'Logs (' + extensionData[0].logs.length + ')');
 	});
 
 })();

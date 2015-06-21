@@ -75,8 +75,8 @@ $tableParams = array(
 		overviewStorage.setData(extensionData[0].overview);
 		requestStorage.setData(extensionData[0].request);
 		handlesStorage.setData(extensionData[0].handles);
-		
-		//jQuery('[data-name="zrayExtension:magento/overview"] .tabsButtons').prependTo(jQuery('[data-name="zrayExtension:magento/overview"] .zdb-col-3-wide .zdb-pull-right'));
+
+		zray.updateMenuTitle('magento', 'overview', 'Overview');
 	});
 
 })();
@@ -84,6 +84,7 @@ var switchTab = function(tab){
 	jQuery('[data-name="zrayExtension:magento/overview"] .active, [data-name="zrayExtension:magento/overview"] [checked]').removeClass('active').removeAttr('checked');
 	jQuery('[data-name="zrayExtension:magento/overview"] [rel="'+tab.getAttribute('rel')+'"]').addClass('active');
 	jQuery('[data-name="zrayExtension:magento/overview"] [rel="'+tab.getAttribute('rel')+'"] input').prop('checked',true).attr('checked',true);
+	
 }
 </script>
 

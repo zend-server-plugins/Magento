@@ -100,7 +100,7 @@ $tableParams = array(
 			extensionData[k].duration = durationSum;
 		});
 		storage.setData(extensionData);
-		jQuery('[data-name="zrayExtension:magento/events"] .zdb-toolbar-info').append(' ('+extensionData.length+')');
+		zray.updateMenuTitle('magento', 'events', 'Events (' + extensionData.length + ')');
 	});
 
 })();
