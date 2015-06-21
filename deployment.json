@@ -1,7 +1,7 @@
 {
   "name" : "magento",
   "display_name" : "Magento",
-  "version" : "1.0.6",
+  "version" : "1.0.7",
   "type": ["zray", "route"],
   "logo": "logo.png",
   "eula": "LICENSE.txt",
