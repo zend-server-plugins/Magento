@@ -408,7 +408,7 @@ class Magento {
 		unset($context['this']);
 		//var_dump($context);die;
 		$this->observersProfiles[$event.'_'.$method]=array(
-			'duration'=>microtime(time)
+			'duration'=>microtime(true)
 		);
 		if(isset($this->eventTargets[$event])){
 			$this->observersProfiles[$event.'_'.$method]['action']=get_class($this->eventTargets[$event]);
