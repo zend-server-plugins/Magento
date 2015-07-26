@@ -382,7 +382,7 @@ class Magento {
 		$this->events[$event]=array(
 			'id'=>++$this->_eventsCount,
 			'name'=>$event,
-			'action'=>is_object($context['functionArgs'][1]) ? get_class($context['functionArgs'][1]) : false,
+			'action'=> !empty($context['functionArgs'][1]) && is_object($context['functionArgs'][1]) ? get_class($context['functionArgs'][1]) : false,
 		);
 		/* EOF Block render */
 		$args = isset($context['functionArgs'][1]) ? $context['functionArgs'][1] : array();
