@@ -72,9 +72,18 @@ class Magento {
 		$events=array();
 		$counter = 1;
 		foreach($eventsAreas as $area){
+			if(empty($this->registeredEvents[$area])){
+				continue;
+			}
 			foreach($this->registeredEvents[$area] as $eventName => $eventData){
 				$observers = array();
+				if(empty($eventData['observers']) || !is_array($eventData['observers'])){
+					continue;
+				}
 				foreach($eventData['observers'] as $name => &$observer){
+					if(empty($this->observersProfiles[$eventName.'_'.$observer['method']]['action'])){
+						continue;
+					}
 					if($this->observersProfiles[$eventName.'_'.$observer['method']]){
 						$observer['action']=$this->observersProfiles[$eventName.'_'.$observer['method']]['action'];
 						$observer['duration']=number_format($this->observersProfiles[$eventName.'_'.$observer['method']]['duration'],3);
@@ -297,8 +306,7 @@ class Magento {
 		} else {
 			$blockStruct['view_variables'] = NULL;
 		}
-		$blockStruct['inCache'] = Mage::app()->loadCache($block->getCacheKey()) ? true : false;
-		
+		$blockStruct['inCache'] = !Mage::app()->getStore()->isAdmin() && Mage::app()->loadCache($block->getCacheKey()) ? true : false;
 		$this->blocks[$block->getNameInLayout()]=$blockStruct;
 	}
 	
@@ -307,6 +315,9 @@ class Magento {
 			return; 
 		}
 		$block = $context['functionArgs'][1]['block'];
+		if(empty($this->blocks[$block->getNameInLayout()])){
+			return;
+		}
 		$this->blocks[$block->getNameInLayout()]['render_time'] = number_format(microtime(true) - $this->blocks[$block->getNameInLayout()]['render_time'], 3);
 		$storage['renderedBlocks'][]=$this->blocks[$block->getNameInLayout()];
 		unset($this->blocks[$block->getNameInLayout()]);
@@ -368,6 +379,9 @@ class Magento {
 	public function mageDispatchEventStart($context, & $storage) {
 		/// collect event targets for events collector
 		$event = $context['functionArgs'][0];
+		if(empty($context['functionArgs'][1])){
+			return;
+		}
 		switch($event){
 			case 'controller_action_layout_generate_blocks_after':
 				$this->collectLayoutBlocks($context,$storage);
@@ -382,7 +396,7 @@ class Magento {
 		$this->events[$event]=array(
 			'id'=>++$this->_eventsCount,
 			'name'=>$event,
-			'action'=> !empty($context['functionArgs'][1]) && is_object($context['functionArgs'][1]) ? get_class($context['functionArgs'][1]) : false,
+			'action'=>  is_object($context['functionArgs'][1]) ? get_class($context['functionArgs'][1]) : false,
 		);
 		/* EOF Block render */
 		$args = isset($context['functionArgs'][1]) ? $context['functionArgs'][1] : array();
@@ -483,9 +497,13 @@ class Magento {
 					$methodLine=0;
 				}
 				unset($methodReflector);
-				$reflector = new ReflectionClass($class);
-				$classFile=$reflector->getFileName();
-				unset($reflector);
+				try{
+					$reflector = new ReflectionClass($class);
+					$classFile=$reflector->getFileName();
+					unset($reflector);
+				}catch(Exception $e){
+					$classFile = '';		
+				}
 				$observerData = array(
 						'area' => $eventArea,
 						'event' => $eventName,
