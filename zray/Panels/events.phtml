@@ -42,7 +42,7 @@ $tableParams = array(
 			sortable:true,
 			width:100,
 			getHtml: function(val, rec) {
-				if(val){ return val; }
+				if(! val){ return -1; }
 				return val.toFixed(3);
 			}
 		},
