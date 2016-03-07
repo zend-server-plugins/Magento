@@ -1,5 +1,4 @@
 <?php
-
 function array_copy($arr) {
     $newArray = array();
     foreach($arr as $key => $value) {
@@ -52,14 +51,14 @@ class Magento {
 	 * @param array $storage
 	 */
 	public function mageRunExit($context, &$storage){
+		$this->debuggingLevel = isset($_COOKIE['ZRAY_MAGENTO_DEBUGGING_LEVEL']) ? intval($_COOKIE['ZRAY_MAGENTO_DEBUGGING_LEVEL']) : 0;
+
 		$storage['modules'] = array();
 		$this->storeModules($storage['modules']);
 		
 		//Observers / Events
 		$storage['observers'] = array();
 		$this->storeObservers($storage['observers'][]);
-		
-		
 		
 		//Overview
 		$storage['overview'][] = $this->getOverview();
@@ -197,73 +196,82 @@ class Magento {
 			return array('name' => $handle);
 		}, Mage::app()->getLayout()->getUpdate()->getHandles());
 		
-		$productAttrsCount=0;
-		try{
+
+		$overview = array(
+            'Website ID'      => (method_exists($_website,'getId')) ? $_website->getId() : '',
+            'Website Name'    => (method_exists($_website,'getName')) ? $_website->getName() : '',
+            'Store Id'        => (method_exists($_store,'getGroupId')) ? $_store->getGroupId() : '',
+            'Store Name'      => (method_exists($_store,'getGroup') && method_exists($_store->getGroup(),'getName')) ? $_store->getGroup()->getName() : '',
+            'Store View Id'   => (method_exists($_store,'getId')) ? $_store->getId() : '',
+            'Store View Code' => (method_exists($_store,'getCode')) ? $_store->getCode() : '',
+            'Store View Name' => (method_exists($_store,'getName')) ? $_store->getName() : '',
+            );
+
+		if ($this->debuggingLevel > 0) {
+			$productAttrsCount=0;
+			try{
+				$productsCollection = Mage::getModel('catalog/product')
+				->getCollection()
+				->addAttributeToSelect('entity_id');	
+
+				$activeProductsCount = $productsCollection
+				->addAttributeToFilter('status', 1)
+				->addAttributeToFilter('visibility', 4)
+				->count();
 				
-			$activeProductsCount = Mage::getModel('catalog/product')
-			->getCollection()
-			->addAttributeToSelect('entity_id')
-			->addAttributeToFilter('status', 1)
-			->addAttributeToFilter('visibility', 4)
-			->count();
+				$disabledProductsCount = $productsCollection
+				->addAttributeToFilter('status', 0)
+				->count();
+				
+				$categoryCount = Mage::getModel('catalog/category')
+				->getCollection()
+				->count();
 			
-			$disabledProductsCount = Mage::getModel('catalog/product')
-			->getCollection()
-			->addAttributeToSelect('entity_id')
-			->addAttributeToFilter('status', 0)
-			->count();
-			
-			$categoryCount = Mage::getModel('catalog/category')
-			->getCollection()
-			->count();
-		
-			/*$ordersCount = Mage::getModel('sales/order')
-			->getCollection()
-			->count();*/
-			
-			
-			$productAttrs = Mage::getResourceModel('catalog/product_attribute_collection');
-			foreach ($productAttrs as $productAttr) { 
-				/* $productAttr Mage_Catalog_Model_Resource_Eav_Attribute */
-				$productAttrsCount++;
+				/*$ordersCount = Mage::getModel('sales/order')
+				->getCollection()
+				->count();*/
+				
+				
+				$productAttrs = Mage::getResourceModel('catalog/product_attribute_collection');
+				foreach ($productAttrs as $productAttr) { 
+					/* $productAttr Mage_Catalog_Model_Resource_Eav_Attribute */
+					$productAttrsCount++;
+				}
+
+				//$overview['Orders']		= $ordersCount;
+			}catch(Exception $e){
+				$activeProductsCount = 'n\a';
+				$disabledProductsCount = 'n\a';
+				$categoryCount = 'n\a';
 			}
-		}catch(Exception $e){
-			$activeProductsCount = 0;
-			$disabledProductsCount = 0;
-			$categoryCount = 0;
-			$ordersCount = 0;
+		} else {
+			$productAttrsCount = $activeProductsCount = $disabledProductsCount = $categoryCount = "Available on 'Advanced' debugging mode";
+
 		}
 		
-		$overview = array(
-	            'Website ID'      => (method_exists($_website,'getId')) ? $_website->getId() : '',
-	            'Website Name'    => (method_exists($_website,'getName')) ? $_website->getName() : '',
-	            'Store Id'        => (method_exists($_store,'getGroupId')) ? $_store->getGroupId() : '',
-	            'Store Name'      => (method_exists($_store,'getGroup') && method_exists($_store->getGroup(),'getName')) ? $_store->getGroup()->getName() : '',
-	            'Store View Id'   => (method_exists($_store,'getId')) ? $_store->getId() : '',
-	            'Store View Code' => (method_exists($_store,'getCode')) ? $_store->getCode() : '',
-	            'Store View Name' => (method_exists($_store,'getName')) ? $_store->getName() : '',
-				'Active Products'	=> $activeProductsCount,
-				'Disabled Products'	=> $disabledProductsCount,
-				'Categories'		=> $categoryCount,
-				//'Orders'		=> $ordersCount,
-				'Product Attributes'		=> $productAttrsCount,
-	            'Cache Backend'    => $cacheMethod,
-				'Magento Version'   => Mage::getVersion(),
-				'Edition'              => Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise') ? 'enterprise' : 'community',
-				'Controller Class Name' => get_class(Mage::app()->getFrontController()->getAction()),
-				'Controller Class Path' => str_replace(Mage::getBaseDir(),'',str_replace("'",'',$controllerClassReflection->getFileName())),
-				'Module Name'           => Mage::app()->getRequest()->getRouteName(),
-				'Controller Name'       => Mage::app()->getRequest()->getControllerName(),
-				'Action Name'           => Mage::app()->getRequest()->getActionName(),
-				'Path Info'		=> Mage::app()->getRequest()->getPathInfo(),
-				'Current Package'       => Mage::getDesign()->getPackageName(),
-				'Current Theme'         => Mage::getDesign()->getTheme(''),
-				'Template Path'         => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getTemplateFilename('')),
-				'Layout Path'           => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getLayoutFilename('')),
-				'Translation Path'      => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getLocaleBaseDir(array())),
-				'Skin Path'             => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getSkinBaseDir(array()))			
-				
-	        );
+		$overview += array(
+			'Product Attributes'=> $productAttrsCount,
+			'Active Products'	=> $activeProductsCount,
+			'Disabled Products'	=> $disabledProductsCount,
+			'Categories'		=> $categoryCount,
+			//'Orders'		=> $ordersCount,
+			'Cache Backend'    => $cacheMethod,
+			'Magento Version'   => Mage::getVersion(),
+			'Edition'              => Mage::helper('core')->isModuleEnabled('Enterprise_Enterprise') ? 'enterprise' : 'community',
+			'Controller Class Name' => get_class(Mage::app()->getFrontController()->getAction()),
+			'Controller Class Path' => str_replace(Mage::getBaseDir(),'',str_replace("'",'',$controllerClassReflection->getFileName())),
+			'Module Name'           => Mage::app()->getRequest()->getRouteName(),
+			'Controller Name'       => Mage::app()->getRequest()->getControllerName(),
+			'Action Name'           => Mage::app()->getRequest()->getActionName(),
+			'Path Info'		=> Mage::app()->getRequest()->getPathInfo(),
+			'Current Package'       => Mage::getDesign()->getPackageName(),
+			'Current Theme'         => Mage::getDesign()->getTheme(''),
+			'Template Path'         => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getTemplateFilename('')),
+			'Layout Path'           => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getLayoutFilename('')),
+			'Translation Path'      => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getLocaleBaseDir(array())),
+			'Skin Path'             => str_replace(Mage::getBaseDir(),'',Mage::getDesign()->getSkinBaseDir(array()))			
+			
+        );
 		
 		return array(
 			'overview'=>$overview,

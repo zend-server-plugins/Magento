@@ -1,0 +1,20 @@
+<style><?php echo file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'style.css')?></style>
+<script>
+$(function(){
+	$('#zray-magento-settings option[value="'+ ( $.cookie('ZRAY_MAGENTO_DEBUGGING_LEVEL') || 0 ) +'"]').attr('selected',true);
+	$('#zray-magento-settings').on('change',function() {
+		var debugging_level = $('#zray-magento-settings option:selected').val() || 0;
+		$.cookie('ZRAY_MAGENTO_DEBUGGING_LEVEL', debugging_level, { expires: 7, path: '/'});
+		alert('Debugging Level has been changed successfuly!\nPlease refresh page to apply changes.');
+	});
+});
+</script>
+<div id="zray-magento-settings">
+	<div>
+		<label>Debugging Level:</label>
+		<select>
+			<option value="0">Standart</option>
+			<option value="1">Advanced (May slow loading)</option>
+		</select>
+	</div>
+</div>

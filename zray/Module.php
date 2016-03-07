@@ -15,6 +15,12 @@ class Module extends \ZRay\ZRayModule {
 				'mevents'=>false
              ),
 	        'panels' => array(
+				'settings' => array(
+					'display'       => true,
+	                'logo'          => 'logo.png',
+	                'menuTitle' 	=> 'Settings',
+	                'panelTitle'	=> 'Settings',
+				),
 				'logs' => array(
 					'display'       => true,
 	                'logo'          => 'logo.png',
