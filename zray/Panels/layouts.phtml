@@ -53,6 +53,10 @@ var pageXml,packageXml;
 	// create main table - end
 
 	zray.registerDataHandler('magento', 'layouts', function(extensionData, requestData) {
+		if (typeof extensionData[0].page === "undefined") {
+			zray.updateMenuTitle('magento', 'layouts', 'Layouts (0)');
+			return;
+		}
 		pageXml = extensionData[0].page.data;
 		packageXml = extensionData[0].package.data;
 		storage.setData(extensionData[0].layouts.data);
