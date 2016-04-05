@@ -83,6 +83,9 @@ $tableParams = array(
 
 		var aggregated = {};
 		$zendDevBar.each(data, function(key, log){
+			if (typeof log == "undefined") {
+				return;
+			}
 			if (aggregated[log.file]) {
 				aggregated[log.file]++;
 			} else {
@@ -111,7 +114,12 @@ $tableParams = array(
 	zray.registerDataHandler('magento', 'mlogs', function(extensionData, requestData) {
 		storage.setData(extensionData[0].logs);
 		jQuery('[data-name="zrayExtension:magento/logs"] .zdb-toolbar-detail-header h1').append('<small style="margin-left: 10px;">Developer Mode: '+extensionData[0].devMode+'</small>');
-		zray.updateMenuTitle('magento', 'mlogs', 'Logs (' + extensionData[0].logs.length + ')');
+		if (typeof extensionData[0].logs !== "undefined" ){
+			zray.updateMenuTitle('magento', 'mlogs', 'Logs (' + extensionData[0].logs.length + ')');
+		} else {
+			return;
+			zray.updateMenuTitle('magento', 'mlogs', 'Logs (0)');
+		}
 	});
 
 })();
