@@ -99,6 +99,9 @@ $tableParams = array(
 
 		var aggregated = {};
 		$zendDevBar.each(data, function(key, observer){
+			if (typeof observer == "undefined") {
+				return [];
+			}
 			if (aggregated[observer.area]) {
 				aggregated[observer.area]++;
 			} else {
@@ -126,7 +129,11 @@ $tableParams = array(
 	
 	zray.registerDataHandler('magento', 'observers', function(extensionData, requestData) {
 		storage.setData(extensionData[0].observers);
-		zray.updateMenuTitle('magento', 'observers', 'Observers (' + extensionData[0].observers.length + ')');
+		var length = 0;
+		if (typeof extensionData[0].observers !== "undefined") {
+			length = extensionData[0].observers.length;
+		}
+		zray.updateMenuTitle('magento', 'observers', 'Observers (' + length + ')');
 	});
 	
 })();
