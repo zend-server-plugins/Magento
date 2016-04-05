@@ -43,7 +43,11 @@ $tableParams = array(
 			width:100,
 			getHtml: function(val, rec) {
 				if(! val){ return -1; }
-				return val.toFixed(3);
+				if (typeof val === "undefined") {
+					return "";
+				} else {
+					return val.toFixed(3);
+				}
 			}
 		},
 		{
@@ -94,6 +98,9 @@ $tableParams = array(
 	zray.registerDataHandler('magento', 'mevents', function(extensionData, requestData) {
 		jQuery.each(extensionData,function(k,v){
 			var durationSum=0;
+			if (typeof v.observers === "undefined") {
+				return;
+			}
 			jQuery.each(v.observers,function(k2,v2){
 				durationSum+=parseFloat(v2.duration);
 			});
