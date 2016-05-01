@@ -80,7 +80,10 @@ $tableParams = array(
 		storage.setData(extensionData);
 		zray.updateMenuTitle('magento', 'renderedBlocks', 'Rendered Blocks (' + extensionData.length + ')');
 	});
-
+	zray.registerResetHandler('magento', 'renderedBlocks', function($, data) {
+		storage.reset();
+		zray.updateMenuTitle('magento', 'renderedBlocks', 'Rendered Blocks (0)');
+	});
 })();
 </script>
 
