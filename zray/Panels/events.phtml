@@ -110,6 +110,10 @@ $tableParams = array(
 		zray.updateMenuTitle('magento', 'events', 'Events (' + extensionData.length + ')');
 	});
 
+	zray.registerResetHandler('magento', 'mevents', function($, data) {
+		storage.reset();
+		zray.updateMenuTitle('magento', 'events', 'Events (0)');
+	});
 })();
 </script>
 
