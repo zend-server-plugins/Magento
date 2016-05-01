@@ -40,6 +40,9 @@ $tableParams = array(
 	zray.registerDataHandler('magento', 'mrequest', function(extensionData, requestData) {
 		storage.setData(extensionData);
 	});
+	zray.registerResetHandler('magento', 'mrequest', function($, data) {
+		storage.reset();
+	});
 	
 })();
 </script>
