@@ -67,6 +67,11 @@ var pageXml,packageXml;
 		zray.updateMenuTitle('magento', 'layouts', 'Layouts (' + extensionData[0].layouts.data.length + ')');
 	});
 
+	zray.registerResetHandler('magento', 'layouts', function($, data) {
+		storage.reset();
+		zray.updateMenuTitle('magento', 'layouts', 'Layouts (0)');
+	});
+	
 })();
 var xmlShow = function(xml){
 	if(window.hljs){
