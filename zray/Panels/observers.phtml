@@ -135,10 +135,13 @@ $tableParams = array(
 		}
 		zray.updateMenuTitle('magento', 'observers', 'Observers (' + length + ')');
 	});
-	zray.registerResetHandler('magento', 'observers', function($, data) {
-		storage.reset();
-		zray.updateMenuTitle('magento', 'observers', 'Observers (0)');
-	});
+	
+	if (typeof zray.registerResetHandler === 'function') {
+		zray.registerResetHandler('magento', 'observers', function($, data) {
+			storage.reset();
+			zray.updateMenuTitle('magento', 'observers', 'Observers (0)');
+		});
+	}
 })();
 </script>
 
