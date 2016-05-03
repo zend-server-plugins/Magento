@@ -65,10 +65,12 @@ $tableParams = array(
 		zray.updateMenuTitle('magento', 'blocks', 'Blocks (' + extensionData[0].count + ')');
 	});
 
-	zray.registerResetHandler('magento', 'blocks', function($, data) {
-		storage.reset();
-		zray.updateMenuTitle('magento', 'blocks', 'Blocks (0)');
-	});
+	if (typeof zray.registerResetHandler === 'function') {
+		zray.registerResetHandler('magento', 'blocks', function($, data) {
+			storage.reset();
+			zray.updateMenuTitle('magento', 'blocks', 'Blocks (0)');
+		});
+	}
 })();
 </script>
 
