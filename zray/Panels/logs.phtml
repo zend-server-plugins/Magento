@@ -122,10 +122,12 @@ $tableParams = array(
 		}
 	});
 	
-	zray.registerResetHandler('magento', 'mlogs', function($, data) {
-		storage.reset();
-		zray.updateMenuTitle('magento', 'mlogs', 'Logs (0)');
-	});
+	if (typeof zray.registerResetHandler === 'function') {
+		zray.registerResetHandler('magento', 'mlogs', function($, data) {
+			storage.reset();
+			zray.updateMenuTitle('magento', 'mlogs', 'Logs (0)');
+		});
+	}
 	
 })();
 </script>
