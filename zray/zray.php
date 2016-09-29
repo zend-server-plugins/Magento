@@ -217,19 +217,19 @@ class Magento {
 				$activeProductsCount = $productsCollection
 				->addAttributeToFilter('status', 1)
 				->addAttributeToFilter('visibility', 4)
-				->count();
+				->getSize();
 				
 				$disabledProductsCount = $productsCollection
 				->addAttributeToFilter('status', 0)
-				->count();
+				->getSize();
 				
 				$categoryCount = Mage::getModel('catalog/category')
 				->getCollection()
-				->count();
+				->getSize();
 			
-				/*$ordersCount = Mage::getModel('sales/order')
+				$ordersCount = Mage::getModel('sales/order')
 				->getCollection()
-				->count();*/
+				->getSize();
 				
 				
 				$productAttrs = Mage::getResourceModel('catalog/product_attribute_collection');
